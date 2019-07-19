@@ -18,13 +18,6 @@ namespace TwitterApiTest.Controllers
         private const string ACCESS_TOKEN = "XXX";
         private const string ACCESS_SECRET = "XXX";
 
-        private readonly TweetContext _context;
-
-        public TweetController(TweetContext context)
-        {
-            _context = context;
-        }
-
         // GET: api/tweet/[検索キーワード]
         [HttpGet("{keyword}")]
         public async Task<ActionResult<IEnumerable<Tweet>>> GetTweets(string keyword)
@@ -32,14 +25,14 @@ namespace TwitterApiTest.Controllers
             var tokens = CoreTweet.Tokens.Create(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET);
             var tweets = await tokens.Search.TweetsAsync(count => 3, q => keyword);
 
+            var result = new List<Tweet>();
+
             foreach (var tweet in tweets)
             {
-                _context.Tweets.Add(new Tweet { id = tweet.Id, keyword = keyword, name = tweet.User.ScreenName, text = tweet.Text });
+                result.Add(new Tweet { id = tweet.Id, keyword = keyword, name = tweet.User.ScreenName, text = tweet.Text });
             }
 
-            _context.SaveChanges();
-
-            return await _context.Tweets.ToListAsync();
+            return result;
         }
     }
 }
