@@ -11,5 +11,11 @@ namespace TwitterApiTest.Models
         public string keyword { get; set; }
         public string name { get; set; }
         public string text { get; set; }
+        public DateTimeOffset date { get; set; }
+
+        public override string ToString()
+        {
+            return $"{this.date.ToString("yyyy/MM/dd HH:mm:ss")}\n{this.name}\n{this.text}";
+        }
     }
 }
